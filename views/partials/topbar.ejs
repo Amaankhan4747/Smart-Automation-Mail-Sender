@@ -1,0 +1,19 @@
+      <div class="topbar">
+        <div>
+          <h2><%= title %></h2>
+          <% if (typeof caption !== 'undefined' && caption) { %>
+            <div class="page-caption"><%= caption %></div>
+          <% } %>
+        </div>
+        <% if (typeof topbarAction !== 'undefined') { %>
+          <%- topbarAction %>
+        <% } %>
+      </div>
+
+      <div class="content">
+        <% if (successMsg && successMsg.length) { %>
+          <div class="alert alert-success">✅ <%= successMsg[0] %></div>
+        <% } %>
+        <% if (errorMsg && errorMsg.length) { %>
+          <div class="alert alert-error">⚠️ <%= errorMsg[0] %></div>
+        <% } %>

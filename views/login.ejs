@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · Smart Resume Mail Sender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="logo-badge">SR</span>
+        <span>Smart Mail Sender</span>
+      </div>
+      <h1>Welcome back</h1>
+      <p class="sub">Log in to send job-application emails in one click.</p>
+
+      <% if (errorMsg && errorMsg.length) { %>
+        <div class="alert alert-error">⚠️ <%= errorMsg[0] %></div>
+      <% } %>
+      <% if (successMsg && successMsg.length) { %>
+        <div class="alert alert-success">✅ <%= successMsg[0] %></div>
+      <% } %>
+
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+      </form>
+
+      <div class="auth-footer">
+        Don't have an account? <a href="/register">Create one</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

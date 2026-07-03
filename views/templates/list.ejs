@@ -1,0 +1,50 @@
+<%- include('../partials/header') %>
+<%- include('../partials/topbar', { topbarAction: `<a href="/templates/new" class="btn btn-primary">+ Add New Template</a>` }) %>
+
+<div class="card">
+  <% if (templates.length === 0) { %>
+    <div class="empty-state">
+      <div class="icon">📄</div>
+      <p>No templates yet. Create your first job profile template to get started.</p>
+      <a href="/templates/new" class="btn btn-primary">+ Add New Template</a>
+    </div>
+  <% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Job Profile</th>
+          <th>Subject</th>
+          <th>Resume</th>
+          <% if (currentUser.role === 'admin') { %><th>Owner</th><% } %>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% templates.forEach((t, i) => { %>
+        <tr>
+          <td class="cell-muted"><%= i + 1 %></td>
+          <td class="cell-strong"><%= t.jobProfile %></td>
+          <td><%= t.subject %></td>
+          <td><a href="/templates/<%= t._id %>/resume" target="_blank" class="cell-muted">📎 <%= t.resumeOriginalName %></a></td>
+          <% if (currentUser.role === 'admin') { %>
+            <td class="cell-muted"><%= t.user ? t.user.name : 'Unknown' %></td>
+          <% } %>
+          <td class="actions-cell">
+            <% if (currentUser.role !== 'viewer') { %>
+            <a href="/templates/<%= t._id %>/edit" class="btn btn-icon btn-edit" title="Edit">✏️</a>
+            <form action="/templates/<%= t._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete template &quot;<%= t.jobProfile %>&quot;? This will also remove its resume file.');" style="display:inline;">
+              <button type="submit" class="btn btn-icon btn-danger" title="Delete">🗑️</button>
+            </form>
+            <% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

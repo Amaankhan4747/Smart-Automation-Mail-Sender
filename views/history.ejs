@@ -1,0 +1,48 @@
+<%- include('partials/header') %>
+<%- include('partials/topbar', { caption: currentUser.role === 'admin' ? 'Showing email activity for all users.' : 'Showing your sent and failed emails.' }) %>
+
+<div class="card">
+  <% if (history.length === 0) { %>
+    <div class="empty-state">
+      <div class="icon">📊</div>
+      <p>No email activity yet. Sent emails will show up here.</p>
+    </div>
+  <% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>To Email</th>
+          <th>Job Profile</th>
+          <th>Date &amp; Time</th>
+          <% if (currentUser.role === 'admin') { %><th>User</th><% } %>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% history.forEach((h, i) => { %>
+        <tr>
+          <td class="cell-muted"><%= i + 1 %></td>
+          <td class="cell-strong"><%= h.toEmail %></td>
+          <td><%= h.jobProfile %></td>
+          <td class="cell-muted"><%= new Date(h.sentAt).toLocaleString() %></td>
+          <% if (currentUser.role === 'admin') { %>
+            <td class="cell-muted"><%= h.user ? h.user.name : 'Unknown' %></td>
+          <% } %>
+          <td>
+            <% if (h.status === 'Sent') { %>
+              <span class="badge badge-sent">✔ Sent</span>
+            <% } else { %>
+              <span class="badge badge-failed" title="<%= h.errorMessage %>">✖ Failed</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

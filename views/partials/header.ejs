@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · Smart Resume Mail Sender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="mobile-topbar">
+    <button type="button" class="hamburger-btn" id="sidebarToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="mobile-brand">
+      <span class="logo-badge">SR</span>
+      <span>Smart Mail Sender</span>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="logo-badge">SR</span>
+        <span>Smart Mail Sender</span>
+      </div>
+
+      <nav class="nav-group">
+        <a href="/" class="nav-link <%= active === 'home' ? 'active' : '' %>">
+          <span class="icon">🏠</span> Home
+        </a>
+        <a href="/templates" class="nav-link <%= active === 'templates' ? 'active' : '' %>">
+          <span class="icon">📄</span> Templates
+        </a>
+        <a href="/history" class="nav-link <%= active === 'history' ? 'active' : '' %>">
+          <span class="icon">📊</span> Email History
+        </a>
+        <a href="/profile" class="nav-link <%= active === 'profile' ? 'active' : '' %>">
+          <span class="icon">👤</span> Profile
+        </a>
+        <% if (currentUser && currentUser.role === 'admin') { %>
+        <a href="/admin/users" class="nav-link <%= active === 'admin' ? 'active' : '' %>">
+          <span class="icon">🛡️</span> Admin · Users
+        </a>
+        <% } %>
+      </nav>
+
+      <div class="sidebar-footer">
+        <% if (currentUser) { %>
+        <div class="sidebar-user">
+          <span class="avatar"><%= currentUser.name.charAt(0).toUpperCase() %></span>
+          <div>
+            <div class="u-name"><%= currentUser.name %></div>
+            <div class="u-role"><%= currentUser.role %></div>
+          </div>
+        </div>
+        <a href="/logout" class="nav-link">
+          <span class="icon">🚪</span> Logout
+        </a>
+        <% } %>
+      </div>
+    </aside>
+
+    <div class="main-area">

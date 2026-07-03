@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+<%- include('../partials/topbar', { caption: 'Update your experience, technologies or any content.' }) %>
+
+<div class="card" style="max-width: 720px;">
+  <form action="/templates/<%= template._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="jobProfile">Job Profile</label>
+      <input type="text" id="jobProfile" name="jobProfile" value="<%= template.jobProfile %>" required />
+    </div>
+
+    <div class="form-group">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" name="subject" value="<%= template.subject %>" required />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Email Content</label>
+      <textarea id="content" name="content" required><%= template.content %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Current Resume</label>
+      <div class="resume-preview">
+        <span class="pdf-icon">PDF</span>
+        <div>
+          <div class="cell-strong"><a href="/templates/<%= template._id %>/resume" target="_blank"><%= template.resumeOriginalName %></a></div>
+          <div class="cell-muted">Current file</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="resume">Upload New Resume (optional)</label>
+      <input type="file" id="resume" name="resume" accept="application/pdf" />
+      <div class="hint">Uploading a new file will replace the old one.</div>
+    </div>
+
+    <div class="actions-cell">
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+      <a href="/templates" class="btn btn-outline">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,133 @@
+<%- include('partials/header') %>
+<%- include('partials/topbar') %>
+
+<% if (!smtpConfigured) { %>
+  <div class="alert alert-error">
+    ⚠️ Your sending email isn't configured yet. Go to
+    <a href="/profile" style="text-decoration:underline; font-weight:700;">Profile</a>
+    to add your SMTP credentials before sending emails.
+  </div>
+<% } %>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="label">Your Job Profiles</div>
+    <div class="value"><%= templates.length %></div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Sending From</div>
+    <div class="value" style="font-size:1rem; word-break:break-all;"><%= currentUser.smtp && currentUser.smtp.authUser ? currentUser.smtp.authUser : 'Not set' %></div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Account Role</div>
+    <div class="value" style="font-size:1rem; text-transform:capitalize;"><%= currentUser.role %></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div>
+      <h3>Send Application Email</h3>
+      <div class="step-flow">
+        <span class="step">1. Select Profile</span>→
+        <span class="step">2. Auto-fill</span>→
+        <span class="step">3. Enter recipient</span>→
+        <span class="step">4. Send</span>
+      </div>
+    </div>
+  </div>
+
+  <% if (templates.length === 0) { %>
+    <div class="empty-state">
+      <div class="icon">📭</div>
+      <p>You don't have any templates yet.</p>
+      <a href="/templates/new" class="btn btn-primary">+ Add New Template</a>
+    </div>
+  <% } else { %>
+  <form action="/send-email" method="POST" id="sendEmailForm">
+    <div class="send-grid">
+      <div>
+        <div class="form-group">
+          <label for="templateId">Select Job Profile</label>
+          <select id="templateId" name="templateId" required>
+            <option value="" disabled selected>Choose a job profile…</option>
+            <% templates.forEach(t => { %>
+              <option value="<%= t._id %>"><%= t.jobProfile %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>From Email</label>
+            <input type="text" value="<%= currentUser.smtp && currentUser.smtp.authUser ? currentUser.smtp.authUser : 'Not configured' %>" disabled />
+          </div>
+          <div class="form-group">
+            <label for="toEmail">To Email</label>
+            <input type="email" id="toEmail" name="toEmail" placeholder="hr@company.com" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject (Auto-filled)</label>
+          <input type="text" id="subject" placeholder="Select a job profile to load subject" disabled />
+        </div>
+
+        <div class="form-group">
+          <label for="content">Email Content (Auto-filled)</label>
+          <textarea id="content" placeholder="Select a job profile to load email content" disabled></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="sendBtn" disabled>📤 Send Email</button>
+      </div>
+
+      <div>
+        <div class="form-group">
+          <label>Resume (Auto-attached)</label>
+          <div class="resume-preview" id="resumePreview">
+            <span class="pdf-icon">PDF</span>
+            <div>
+              <a href="#" id="resumeName" target="_blank" class="cell-strong" style="pointer-events:none;">No profile selected</a>
+              <div class="cell-muted">Attached automatically from the template</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <% } %>
+</div>
+
+<script>
+  const templateSelect = document.getElementById('templateId');
+  const subjectField = document.getElementById('subject');
+  const contentField = document.getElementById('content');
+  const resumeName = document.getElementById('resumeName');
+  const sendBtn = document.getElementById('sendBtn');
+
+  if (templateSelect) {
+    templateSelect.addEventListener('change', async () => {
+      const id = templateSelect.value;
+      if (!id) return;
+
+      try {
+        const res = await fetch(`/api/templates/${id}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          subjectField.value = data.subject;
+          contentField.value = data.content;
+          resumeName.textContent = data.resumeOriginalName;
+          resumeName.href = data.resumeUrl;
+          resumeName.style.pointerEvents = 'auto';
+          resumeName.style.textDecoration = 'underline';
+          sendBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error('Could not load template:', err);
+      }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

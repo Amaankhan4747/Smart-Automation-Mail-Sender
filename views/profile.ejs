@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+<%- include('partials/topbar', { caption: 'Manage your account and the SMTP credentials used to send emails.' }) %>
+
+<div class="card" style="max-width: 720px;">
+  <div class="card-header"><h3>Account Details</h3></div>
+  <form action="/profile" method="POST">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" value="<%= currentUser.name %>" required />
+      </div>
+      <div class="form-group">
+        <label>Email (login)</label>
+        <input type="text" value="<%= currentUser.email %>" disabled />
+      </div>
+    </div>
+
+    <div class="card-header" style="margin-top: 6px;"><h3>Email Sending (SMTP) Settings</h3></div>
+    <div class="hint" style="margin-bottom: 16px;">
+      This is the account emails are actually sent from. For Gmail, use an
+      <a href="https://myaccount.google.com/apppasswords" target="_blank" style="color:var(--accent-blue); font-weight:600;">App Password</a>,
+      host <code>smtp.gmail.com</code>, port <code>587</code>.
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="host">SMTP Host</label>
+        <input type="text" id="host" name="host" placeholder="smtp.gmail.com" value="<%= currentUser.smtp?.host || '' %>" />
+      </div>
+      <div class="form-group">
+        <label for="port">SMTP Port</label>
+        <input type="number" id="port" name="port" placeholder="587" value="<%= currentUser.smtp?.port || 587 %>" />
+      </div>
+    </div>
+
+    <div class="form-group checkbox-row">
+      <input type="checkbox" id="secure" name="secure" <%= currentUser.smtp?.secure ? 'checked' : '' %> />
+      <label for="secure" style="margin:0;">Use SSL (typically port 465)</label>
+    </div>
+
+    <div class="form-group">
+      <label for="authUser">Sender Email Address</label>
+      <input type="email" id="authUser" name="authUser" placeholder="you@gmail.com" value="<%= currentUser.smtp?.authUser || '' %>" />
+    </div>
+
+    <div class="form-group">
+      <label for="authPass">SMTP Password / App Password</label>
+      <input type="password" id="authPass" name="authPass" placeholder="<%= currentUser.smtp?.authPass ? 'Leave blank to keep current password' : 'Enter app password' %>" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>
