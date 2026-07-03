@@ -1,4 +1,4 @@
-      <div class="topbar">
+<div class="topbar">
         <div>
           <h2><%= title %></h2>
           <% if (typeof caption !== 'undefined' && caption) { %>
@@ -11,9 +11,3 @@
       </div>
 
       <div class="content">
-        <% if (successMsg && successMsg.length) { %>
-          <div class="alert alert-success">✅ <%= successMsg[0] %></div>
-        <% } %>
-        <% if (errorMsg && errorMsg.length) { %>
-          <div class="alert alert-error">⚠️ <%= errorMsg[0] %></div>
-        <% } %>

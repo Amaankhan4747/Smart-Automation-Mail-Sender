@@ -1,6 +1,19 @@
-      </div>
+</div>
     </div>
   </div>
+
+  <% var hasError = typeof errorMsg !== 'undefined' && errorMsg && errorMsg.length; %>
+  <% var hasSuccess = typeof successMsg !== 'undefined' && successMsg && successMsg.length; %>
+  <% if (hasError || hasSuccess) { %>
+  <div class="app-modal-overlay visible" id="appModalOverlay">
+    <div class="app-modal <%= hasError ? 'app-modal-error' : 'app-modal-success' %>">
+      <div class="app-modal-icon"><%= hasError ? '⚠️' : '✅' %></div>
+      <h3><%= hasError ? 'Something Went Wrong' : 'Success' %></h3>
+      <p><%= hasError ? errorMsg[0] : successMsg[0] %></p>
+      <button type="button" class="btn <%= hasError ? 'btn-danger' : 'btn-primary' %> btn-block" id="appModalCloseBtn">OK, Got It</button>
+    </div>
+  </div>
+  <% } %>
 
   <script>
     (function () {
@@ -8,38 +21,61 @@
       const overlay = document.getElementById('sidebarOverlay');
       const toggleBtn = document.getElementById('sidebarToggle');
 
-      if (!sidebar || !overlay || !toggleBtn) return;
-
-      function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('visible');
-        document.body.classList.add('sidebar-locked');
-      }
-
-      function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('visible');
-        document.body.classList.remove('sidebar-locked');
-      }
-
-      toggleBtn.addEventListener('click', function () {
-        if (sidebar.classList.contains('open')) {
-          closeSidebar();
-        } else {
-          openSidebar();
+      if (sidebar && overlay && toggleBtn) {
+        function openSidebar() {
+          sidebar.classList.add('open');
+          overlay.classList.add('visible');
+          document.body.classList.add('sidebar-locked');
         }
-      });
 
-      overlay.addEventListener('click', closeSidebar);
+        function closeSidebar() {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('visible');
+          document.body.classList.remove('sidebar-locked');
+        }
 
-      // Close the drawer automatically after tapping a nav link (mobile UX)
-      sidebar.querySelectorAll('a.nav-link').forEach(function (link) {
-        link.addEventListener('click', closeSidebar);
-      });
+        toggleBtn.addEventListener('click', function () {
+          if (sidebar.classList.contains('open')) {
+            closeSidebar();
+          } else {
+            openSidebar();
+          }
+        });
 
-      // Close on Escape key
+        overlay.addEventListener('click', closeSidebar);
+
+        // Close the drawer automatically after tapping a nav link (mobile UX)
+        sidebar.querySelectorAll('a.nav-link').forEach(function (link) {
+          link.addEventListener('click', closeSidebar);
+        });
+      }
+
+      // ---- Global success/error result modal ----
+      const appModalOverlay = document.getElementById('appModalOverlay');
+      const appModalCloseBtn = document.getElementById('appModalCloseBtn');
+
+      function closeAppModal() {
+        if (!appModalOverlay) return;
+        appModalOverlay.classList.remove('visible');
+        setTimeout(() => appModalOverlay.remove(), 200);
+      }
+
+      if (appModalCloseBtn) appModalCloseBtn.addEventListener('click', closeAppModal);
+      if (appModalOverlay) {
+        appModalOverlay.addEventListener('click', function (e) {
+          if (e.target === appModalOverlay) closeAppModal();
+        });
+      }
+
+      // Close on Escape key (closes whichever overlay is open)
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeSidebar();
+        if (e.key !== 'Escape') return;
+        if (sidebar && sidebar.classList.contains('open')) {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('visible');
+          document.body.classList.remove('sidebar-locked');
+        }
+        closeAppModal();
       });
     })();
   </script>
