@@ -20,6 +20,14 @@ function buildTransporter(user) {
       user: user.smtp.authUser,
       pass: user.smtp.authPass,
     },
+    // Many cloud hosts (Render, Railway, etc.) resolve SMTP hosts to IPv6
+    // first, and Gmail's SMTP servers frequently hang/time out over IPv6
+    // from those networks. Forcing IPv4 fixes the classic "Connection
+    // Timeout" error seen only in production, never locally.
+    family: 4,
+    connectionTimeout: 20000, // 20s to establish the connection
+    greetingTimeout: 20000, // 20s to receive the SMTP greeting
+    socketTimeout: 30000, // 30s of inactivity before giving up
   });
 }
 
